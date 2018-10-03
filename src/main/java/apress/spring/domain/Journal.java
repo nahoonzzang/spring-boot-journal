@@ -2,7 +2,6 @@ package apress.spring.domain;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,27 +11,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Entity //  엔티티를 디비와 연결 @Transient 붙은 필드 제외
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity // 얘는 곧 테이블임
 public class Journal {
 
   @Id
-  @GeneratedValue(strategy= GenerationType.AUTO)
+  @GeneratedValue(strategy= GenerationType.AUTO) // PK
   private Long id;
   private String title;
-  private Date created;
+  private java.util.Date created;
   private String summary;
 
-  @Transient //  DB 테이블에 간섭하지 않고, 엔티티 클래스 내부에서만 동작하게 하는 어노테이션을 사용한다. @Transient 어노테이션을 사용한 필드나 메소드는 DB 테이블에 적용되지 않는다.
+  @Transient
   private SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
 
-  public Journal(String title, String summary, String date) throws
-      ParseException {
+  public Journal(String title, String summary, String date) {
     this.title = title;
     this.summary = summary;
-    this.created = format.parse(date);
+    try {
+      this.created = format.parse(date);
+    } catch (ParseException pe) {
+      pe.printStackTrace();
+    }
   }
 
   public String getCreatedAsShort() {
@@ -40,14 +42,14 @@ public class Journal {
   }
 
   public String toString() {
-    StringBuilder value = new StringBuilder("JournalEntry(");
+    StringBuilder value = new StringBuilder("Journal(");
     value.append("Id : ");
     value.append(id);
     value.append(", 제목: ");
     value.append(title);
     value.append(",요약: ");
     value.append(summary);
-    value.append(",일자");
+    value.append(",작성일자");
     value.append(getCreatedAsShort());
     value.append(")");
     return value.toString();
