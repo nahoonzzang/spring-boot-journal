@@ -1,6 +1,6 @@
 package apress.spring;
 
-import apress.spring.service.JournalService;
+import apress.spring.service.JournalEntryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -17,16 +17,16 @@ public class SpringBootJournalApplication {
 	}
 
 	@Bean
-	public CommandLineRunner run(JournalService journalService) { // 스프링 부트 시동이 끝나면 실행됨
-		int i = 0;
+	public CommandLineRunner start(JournalEntryService journalEntryService) { // 스프링 부트 시동이 끝나면 실행됨
 		return args -> {
 			log.info("@@ 데이터 생성... ");
-			journalService.insertData();
 			log.info("@@ findAll() 호출");
-			journalService.findAll().forEach(entry -> {
+			System.out.println("시작");
+			journalEntryService.findAll().forEach(entry -> {
 				System.out.print("entry : " + entry.toString());
 				log.info(entry.toString());
 			});
+		System.out.println("완료");
 		};
 	}
 }
